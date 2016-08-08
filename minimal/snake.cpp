@@ -10,28 +10,36 @@
 
 enum Direction {NONE, UP, DOWN, LEFT, RIGHT };
 
+//struct galore
+struct Board
+{
+	int ymax, xmax;
+	
+	Board(){}
+	Board(int ymaxi, int xmaxi) : ymax(ymaxi), xmax(xmaxi) {}
+	~Board(){}
+};
+
 struct Snake
 {
 	std::vector<int> y, x;
-	//int y, x; 
-	int ymax, xmax;
+	std::vector<Direction> direction, olddirection;
 	int size;
 	int score;
-	std::vector<Direction> direction, olddirection;
 	
 	void display()
 	{
 		for(int i=0; i<size; i++) mvprintw(y[i],x[i],"@");
 	}
 	
-	bool check_coord()
+	bool check_coord(Board & terminal)
 	{
 		//check boundaries
 		if(x.front() < 0) {x.front() = 0; return true;}
-		else if(x.front() >= xmax) {x.front() = xmax - 1; return true;}
+		else if(x.front() >= terminal.xmax) {x.front() = terminal.xmax - 1; return true;}
 
 		if(y.front() < 0) {y.front() = 0; return true;}
-		else if(y.front() >= ymax) {y.front() = ymax - 1; return true;}
+		else if(y.front() >= terminal.ymax) {y.front() = terminal.ymax - 1; return true;}
 		
 		//check body
 		for(int i=1; i<size; i++)
@@ -114,8 +122,7 @@ struct Snake
 	
 	
 	Snake(){}
-	Snake(int yi, int xi, int ymaxi, int xmaxi, Direction directioni) : 
-	ymax(ymaxi), xmax(xmaxi), score(0), size(1) 
+	Snake(int yi, int xi, Direction directioni) : score(0), size(1) 
 	{
 		y.push_back(yi);
 		x.push_back(xi);
@@ -129,33 +136,61 @@ struct Snake
 	}
 };
 
-
-bool food(bool istherefood, int & yfood, int & xfood, Snake & Ekans)
+struct Food
 {
-	if(istherefood)
+	int y, x;
+	bool istherefood;
+	
+	void display()
 	{
-		if( Ekans.y[0] == yfood && Ekans.x[0] == xfood) 
+		if(istherefood) mvprintw(y,x,"•");
+	}
+	
+	void generateon(Board & terminal)
+	{
+		y = rand() % terminal.ymax;
+		x = rand() % terminal.xmax;
+	}
+	
+	bool eatenby(Snake & Ekans)
+	{
+		if( Ekans.y.front() == y && Ekans.x.front() == x) 
 		{
 			Ekans.lunch();
-			return false;
-		}
-		else 
-		{
-			mvprintw(yfood,xfood,"•");
 			return true;
 		}
+		else return false;
 	}
-	else
+
+	void check(Snake & Ekans, Board & terminal)
 	{
-		//generate new food
-		yfood = rand() % Ekans.ymax;
-		xfood = rand() % Ekans.xmax;
+		if(istherefood)
+		{
+			//istherefood = eatenby(Ekans)? false : true;
+			if(eatenby(Ekans)) istherefood = false;
+			else istherefood = true;
+		}
+		else
+		{
+			generateon(terminal);
+			istherefood = true;
+		}
+
+		display();
 		
-		mvprintw(yfood,xfood,"•");
-		
-		return true;
 	}
-}
+		
+	
+	
+	Food(){}
+	Food(Board & terminal) : istherefood(true) 
+	{
+		generateon(terminal);
+	}
+	~Food(){}
+};
+
+
 
 int main()
 {
@@ -170,21 +205,25 @@ int main()
 	
 	timeout(200); //adjust speed of the game
 	
-	Direction direction;
+
 	int xmax, ymax;
 	getmaxyx(stdscr, ymax, xmax);
+
+	Board terminal(ymax, xmax);
+
+	//starting point
+	int xstart, ystart;
+	xstart = xmax/2;
+	ystart = ymax/2;
+
+	Snake Ekans = Snake(ystart,xstart,RIGHT);
+
+	Food pidgey(terminal);
 	
-	bool istherefood = false;
 	bool gameover = false;
 	
 	int c = 0;
-	int xfood, yfood;
-	
-	int x, y;
-	x = xmax/2;
-	y = ymax/2;
-	
-	Snake Ekans = Snake(y,x,ymax,xmax,RIGHT);
+
 	
 	while((c = getch()) != 'q' && !gameover)
 	{
@@ -195,18 +234,20 @@ int main()
 		
 		Ekans.display();
 		
-		gameover = Ekans.check_coord();
+		gameover = Ekans.check_coord(terminal);
 		
-		istherefood = food(istherefood, yfood, xfood, Ekans);		
-		
+		//istherefood = food(istherefood, yfood, xfood, Ekans);		
+		pidgey.check(Ekans, terminal);
+
 		refresh();
 	}
 	
 	if(gameover) 
 	{
 		clear();
-		mvprintw(y-2,x-6, "GAMEOVER");
-		mvprintw(y  ,x-6, "Score: %d ", Ekans.score);
+		//center end screen
+		mvprintw(ystart-2,xstart-6, "GAMEOVER");
+		mvprintw(ystart  ,xstart-6, "Score: %d ", Ekans.score);
 		refresh();
 		sleep(2);
 	}
