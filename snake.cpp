@@ -46,7 +46,7 @@ struct Snake
 	{
 		olddirection.front() = direction.front();
 		
-		for(int i=(size-1); i>0; i--)  direction.at(i) = direction.at(i-1);
+		for(int i=size-1; i>0; i--)  direction.at(i) = direction.at(i-1);
 		//for(int i=1; i<size; i++) direction.at(i) = direction.at(i-1);
 		
 		//get new direction
@@ -163,7 +163,6 @@ int main()
 	
 	setlocale(LC_ALL,"");
 	initscr();
-	
 	
 	keypad(stdscr, TRUE);
     noecho();
