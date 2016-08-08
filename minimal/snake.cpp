@@ -130,10 +130,7 @@ struct Snake
 		olddirection.push_back(directioni);
 	}
 	
-	~Snake()
-	{
-		std::cout << "Score: " << score << std::endl;
-	}
+	~Snake(){}
 };
 
 struct Food
@@ -191,66 +188,102 @@ struct Food
 };
 
 
+struct Gamesession
+{
+	Snake Ekans;
+	Food pidgey; //or rattata
+
+	//snake starting point
+	int xstart, ystart;
+	int gamespeed; // bigger = slower (->delay in millisecond)
+
+	bool gameover;
+	int command;
+
+	int get_score()
+	{
+		return Ekans.score;
+	}
+
+	void playon(Board & terminal)
+	{
+		while((command = getch()) != 'q' && !gameover)
+		{
+			clear();
+			
+			//mvprintw(y,x,"☺");
+			Ekans.move(command);
+			
+			Ekans.display();
+			
+			gameover = Ekans.check_coord(terminal);
+				
+			pidgey.check(Ekans, terminal);
+
+			refresh();
+		}
+	
+		if(gameover) 
+		{
+			clear();
+			//center end screen
+			mvprintw(ystart-2,xstart-6, "GAMEOVER");
+			mvprintw(ystart  ,xstart-6, "Score: %d ", Ekans.score);
+			refresh();
+			sleep(2);
+		}
+	}
+
+	Gamesession(){}
+	Gamesession(Board & terminal, int gamespeedi) : gamespeed(gamespeedi), gameover(false), command(0)
+	{
+		timeout(gamespeed);
+
+		xstart = terminal.xmax/2;
+		ystart = terminal.ymax/2;
+
+		Ekans  = Snake(ystart,xstart,RIGHT);
+		pidgey = Food(terminal);
+
+
+	}
+
+	~Gamesession()
+	{
+		std::cout << "Score: " << Ekans.score << std::endl;
+	}
+
+};
+
 
 int main()
 {
 	srand (time(NULL));
 	
 	setlocale(LC_ALL,"");
+
+	//initialize ncurses
 	initscr();
 	
+	start_color();
+	init_pair(1, COLOR_GREEN, COLOR_BLACK);
+
 	keypad(stdscr, TRUE);
-    noecho();
 	curs_set(FALSE);
+	noecho();
 	
-	timeout(200); //adjust speed of the game
+	//timeout(200); //adjust speed of the game
 	
 
 	int xmax, ymax;
 	getmaxyx(stdscr, ymax, xmax);
 
 	Board terminal(ymax, xmax);
-
-	//starting point
-	int xstart, ystart;
-	xstart = xmax/2;
-	ystart = ymax/2;
-
-	Snake Ekans = Snake(ystart,xstart,RIGHT);
-
-	Food pidgey(terminal);
 	
-	bool gameover = false;
-	
-	int c = 0;
+	attron(COLOR_PAIR(1));
+	Gamesession gottacatchemall(terminal, 200);
 
-	
-	while((c = getch()) != 'q' && !gameover)
-	{
-		clear();
-		
-		//mvprintw(y,x,"☺");
-		Ekans.move(c);
-		
-		Ekans.display();
-		
-		gameover = Ekans.check_coord(terminal);
-		
-		//istherefood = food(istherefood, yfood, xfood, Ekans);		
-		pidgey.check(Ekans, terminal);
-
-		refresh();
-	}
-	
-	if(gameover) 
-	{
-		clear();
-		//center end screen
-		mvprintw(ystart-2,xstart-6, "GAMEOVER");
-		mvprintw(ystart  ,xstart-6, "Score: %d ", Ekans.score);
-		refresh();
-		sleep(2);
-	}
+	gottacatchemall.playon(terminal);
 	
 	endwin();
 	
