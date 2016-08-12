@@ -16,6 +16,8 @@
 #include "snake.h"
 #include "food.h"
 
+using namespace JNF_NEAT;
+
 class Gamesession : public JNF_NEAT::IBody {
 	public:
 		Board terminal;

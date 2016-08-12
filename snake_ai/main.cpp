@@ -34,8 +34,8 @@ int main() {
 	params.numberOfInputs = 8;
 	params.numberOfOutputs = 4;
 	//params.advanced.structure.numberOfBiasNeurons = 4;
-	params.updatesPerGeneration = 300;
-
+	params.updatesPerGeneration = 100;
+	double fitness = 2.0; //select score to achieve
 	size_t populationCount = 50;
 
 	// Create Bodies
@@ -47,7 +47,7 @@ int main() {
 	// Training
 	NeuralNetworkTrainer trainer(move(bodies), params);
 	trainer.loggingEnabled = false;
-	trainer.TrainUntilFitnessEquals(5.0);
+	trainer.TrainUntilFitnessEquals(fitness);
 
 	// Get the best Neural Network trained
 	auto champ = trainer.GetTrainedNeuralNetwork();
