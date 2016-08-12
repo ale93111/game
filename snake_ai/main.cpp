@@ -29,7 +29,7 @@ int main() {
 	curs_set(FALSE);
 	noecho();
 	//resizeterm(12,12);
-	//int err = system("resize -s 3 20");
+	//int err = system("resize -s 3 30");
 
 	// Prepare Parameters
 	TrainingParameters params;
