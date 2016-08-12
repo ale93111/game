@@ -18,7 +18,7 @@
 
 using namespace JNF_NEAT;
 
-class Gamesession : public JNF_NEAT::IBody {
+class GameSession : public JNF_NEAT::IBody {
 	public:
 		Board terminal;
 		Snake Ekans;
@@ -40,11 +40,11 @@ class Gamesession : public JNF_NEAT::IBody {
 		void play();
 		void AI_play(TrainedNeuralNetwork & champ);
 
-		Gamesession();
-		Gamesession(int gamespeedin);
+		GameSession();
+		GameSession(int gamespeedin);
 };
 
-Gamesession::Gamesession() : gamespeed(0), gameover(false), command(0) 
+GameSession::GameSession() : gamespeed(0), gameover(false), command(0) 
 {
 	timeout(gamespeed);
 
@@ -60,7 +60,7 @@ Gamesession::Gamesession() : gamespeed(0), gameover(false), command(0)
 	pidgey = Food(terminal);
 }
 
-Gamesession::Gamesession(int gamespeedin) : gamespeed(gamespeedin), gameover(false), command(0) 
+GameSession::GameSession(int gamespeedin) : gamespeed(gamespeedin), gameover(false), command(0) 
 {
 	timeout(gamespeed);
 
@@ -76,7 +76,7 @@ Gamesession::Gamesession(int gamespeedin) : gamespeed(gamespeedin), gameover(fal
 	pidgey = Food(terminal);
 }
 
-void Gamesession::Reset()
+void GameSession::Reset()
 {
 	gameover = false;
 	command = 0;
@@ -84,7 +84,7 @@ void Gamesession::Reset()
 	pidgey = Food(terminal);
 }
 
-void Gamesession::Update(const std::vector<float>& networkOutputs)
+void GameSession::Update(const std::vector<float>& networkOutputs)
 {    
 	command = 0;
 
@@ -107,12 +107,12 @@ void Gamesession::Update(const std::vector<float>& networkOutputs)
 	if(gameover) Reset();
 }
 
-double Gamesession::GetFitness() const
+double GameSession::GetFitness() const
 {
 	return Ekans.score;
 }
 
-std::vector<float> Gamesession::ProvideNetworkWithInputs() const
+std::vector<float> GameSession::ProvideNetworkWithInputs() const
 {
 	std::vector<float> inputs = { Ekans.y.front()/float(terminal.ymax), 
 								  Ekans.x.front()/float(terminal.xmax),
@@ -125,7 +125,7 @@ std::vector<float> Gamesession::ProvideNetworkWithInputs() const
 	return inputs;
 }
 
-void Gamesession::play()
+void GameSession::play()
 {
 	while((command = getch()) != 'q' && !gameover)
 	{
@@ -153,7 +153,7 @@ void Gamesession::play()
 	}
 }
 
-void Gamesession::AI_play(TrainedNeuralNetwork & champ)
+void GameSession::AI_play(TrainedNeuralNetwork & champ)
 {
 	std::vector<float> inputs;
 	std::vector<float> networkOutputs;

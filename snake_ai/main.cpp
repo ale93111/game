@@ -43,7 +43,7 @@ int main() {
 	// Create Bodies
 	vector<shared_ptr<IBody>> bodies;
 	for (size_t i = 0; i < populationCount; ++i) {
-		bodies.push_back(make_shared<Gamesession>());
+		bodies.push_back(make_shared<GameSession>());
 	}
 
 	// Training
@@ -78,20 +78,20 @@ int main() {
 	//resizeterm(12,12);
 
 	attron(COLOR_PAIR(1));
-	Gamesession gottacatchemall(500);
+	GameSession GottaCatchEmAll(500);
 
-	gottacatchemall.AI_play(champ);
+	GottaCatchEmAll.AI_play(champ);
 
 
 	endwin();
 	
-	cout << "Score" << gottacatchemall.GetFitness() << endl;
+	cout << "Score" << GottaCatchEmAll.GetFitness() << endl;
 	//cout << champ.GetJSON() << endl;
 	
-	string filename = "champ.nn";
-	ofstream outfile(filename);
-	outfile << champ.GetJSON();
-	outfile.close();
+	string FileName = "champ.nn";
+	ofstream OutFile(FileName);
+	OutFile << champ.GetJSON();
+	OutFile.close();
 
 	return 0;
 }

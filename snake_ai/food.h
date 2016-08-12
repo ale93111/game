@@ -11,20 +11,20 @@
 struct Food
 {
 	int y, x;
-	bool istherefood;
+	bool IsThereFood;
 	
 	void display()
 	{
-		if(istherefood) mvprintw(y,x,"•");
+		if(IsThereFood) mvprintw(y,x,"•");
 	}
 	
-	void generateon(Board & terminal)
+	void GenerateOn(Board & terminal)
 	{
 		y = rand() % terminal.ymax;
 		x = rand() % terminal.xmax;
 	}
 	
-	bool eatenby(Snake & Ekans)
+	bool EatenBy(Snake & Ekans)
 	{
 		if( Ekans.y.front() == y && Ekans.x.front() == x) 
 		{
@@ -36,16 +36,16 @@ struct Food
 
 	void check(Snake & Ekans, Board & terminal)
 	{
-		if(istherefood)
+		if(IsThereFood)
 		{
-			//istherefood = eatenby(Ekans)? false : true;
-			if(eatenby(Ekans)) istherefood = false;
-			else istherefood = true;
+			//IsThereFood = EatenBy(Ekans)? false : true;
+			if(EatenBy(Ekans)) IsThereFood = false;
+			else IsThereFood = true;
 		}
 		else
 		{
-			generateon(terminal);
-			istherefood = true;
+			GenerateOn(terminal);
+			IsThereFood = true;
 		}
 
 		//display();
@@ -53,9 +53,9 @@ struct Food
 	}
 		
 	Food(){}
-	Food(Board & terminal) : istherefood(true) 
+	Food(Board & terminal) : IsThereFood(true) 
 	{
-		generateon(terminal);
+		GenerateOn(terminal);
 	}
 	~Food(){}
 };
