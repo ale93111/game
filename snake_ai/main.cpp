@@ -28,6 +28,7 @@ int main() {
 	keypad(stdscr, TRUE);
 	curs_set(FALSE);
 	noecho();
+	//resizeterm(12,12);
 
 	// Prepare Parameters
 	TrainingParameters params;
@@ -35,7 +36,7 @@ int main() {
 	params.numberOfOutputs = 4;
 	//params.advanced.structure.numberOfBiasNeurons = 4;
 	params.updatesPerGeneration = 100;
-	double fitness = 2.0; //select score to achieve
+	double fitness = 1.0; //select score to achieve
 	size_t populationCount = 50;
 
 	// Create Bodies
@@ -73,6 +74,7 @@ int main() {
 	keypad(stdscr, TRUE);
 	curs_set(FALSE);
 	noecho();
+	//resizeterm(12,12);
 
 	attron(COLOR_PAIR(1));
 	Gamesession gottacatchemall(500);
