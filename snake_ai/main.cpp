@@ -17,8 +17,8 @@ using namespace JNF_NEAT;
 
 int main() {
 	// Initilize Random Generator
-	//srand((unsigned)time(0U));
-	srand (1);
+	srand((unsigned)time(0U));
+	//srand (1);
 
 	//initialize ncurses
 	setlocale(LC_ALL,"");
@@ -29,6 +29,7 @@ int main() {
 	curs_set(FALSE);
 	noecho();
 	//resizeterm(12,12);
+	//int err = system("resize -s 3 20");
 
 	// Prepare Parameters
 	TrainingParameters params;
@@ -36,7 +37,7 @@ int main() {
 	params.numberOfOutputs = 4;
 	//params.advanced.structure.numberOfBiasNeurons = 4;
 	params.updatesPerGeneration = 100;
-	double fitness = 1.0; //select score to achieve
+	double fitness = 3.0; //select score to achieve
 	size_t populationCount = 50;
 
 	// Create Bodies
@@ -85,7 +86,12 @@ int main() {
 	endwin();
 	
 	cout << "Score" << gottacatchemall.GetFitness() << endl;
-	cout << champ.GetJSON() << endl;
+	//cout << champ.GetJSON() << endl;
 	
+	string filename = "champ.nn";
+	ofstream outfile(filename);
+	outfile << champ.GetJSON();
+	outfile.close();
+
 	return 0;
 }
